@@ -1,0 +1,4 @@
+flask
+flask_httpauth 
+pymongo
+flask_pymongo

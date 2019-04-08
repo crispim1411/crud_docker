@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  datastore:
+    image: mongo:latest
+    #ports:
+    #  - 27017:27017
+  web:
+    build: .
+    ports:
+      - 80:8081
+    environment:
+      - ENV = development
+    volumes:
+      - .:/data
+    links:
+      - datastore
+
+  
