@@ -1,10 +1,13 @@
+#!/usr/bin/env python3
 from flask import Flask, Blueprint, request
 from flask_httpauth import HTTPBasicAuth
 from pymongo import MongoClient
+import os
 
 app = Flask(__name__)
 
-client = MongoClient('mongodb://datastore:27017/')
+URI = os.environ.get('DB')
+client = MongoClient(URI)
 db = client.test_database
 collection = db.test_collection
 

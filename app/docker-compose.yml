@@ -3,14 +3,19 @@ version: '3'
 services:
   datastore:
     image: mongo:latest
-    #ports:
-    #  - 27017:27017
+    environment:
+      - MONGO_DATA_DIR=/usr/data/db
+      - MONGO_LOG_DIR=/dev/null
+    volumes:
+      - ../data/db:/usr/data/db
+
   web:
     build: .
     ports:
       - 80:8081
     environment:
       - ENV = development
+      - DB=mongodb://datastore:27017/data
     volumes:
       - .:/data
     links:

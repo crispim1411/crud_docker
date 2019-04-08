@@ -1,0 +1,17 @@
+<h5>MongoDB</h5>
+<input type="submit" value="mostrar" onclick="submit()">
+
+<script type="text/javascript">
+    function submit() {
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                alert(xhr.response);
+            }
+        }
+        xhr.open('get', 'http://0.0.0.0:80/mostrar', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+        xhr.send();
+    }
+
+</script>
