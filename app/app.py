@@ -1,29 +1,31 @@
 #!/usr/bin/env python3
-from flask import Flask, Blueprint, request
+from flask import Flask, request
 from flask_httpauth import HTTPBasicAuth
+from flask_cors import CORS
 from pymongo import MongoClient
 import os
 
 app = Flask(__name__)
+CORS(app)
 
 URI = os.environ.get('DB')
 client = MongoClient(URI)
 db = client.test_database
 collection = db.test_collection
 
-#TODO: argumentos passados pelo request body
-
-@app.route('/cadastrar/<username>',methods=['POST'])
-def addUser(username):
+@app.route('/cadastrar',methods=['POST'])
+def addUser():
 	try:
-		if username is None:
+		doc = request.json
+		if 'username' not in doc:
 			return 'Missing arguments',400
 
+		username = doc['username']
 		user = collection.find({'username':username})
 		if user is None:
 			return 'message: User already exists',200
 		
-		new = dict(username = username)
+		new = dict(doc)
 		collection.insert_one(new)
 
 		return f'message: User created: {username}',201
@@ -35,9 +37,10 @@ def addUser(username):
 @app.route('/mostrar',methods=['GET'])
 def getUsers():
 	try:
-		query = collection.find()
+		query = collection.find({},{'_id':False})
 		users = [user for user in query]
-		return f'users: {users}',200
+		str_users = f'{users}'.replace("'",'"')
+		return str_users, 200
 
 	except Exception as e:
 		return f'Erro:{e}',400
@@ -49,34 +52,38 @@ def getUserByName(username):
 		if username is None:
 			return 'Missing arguments',400
 
-		user = collection.find_one({'username':username})
+		user = collection.find_one({'username':username},{'_id':False})
 		if user is None:
 			return 'message: User not found',404
 
-		return f"User: {user['username']}",200
+		return f"{user}",200
 	except Exception as e:
 		return f'Erro:{e}',400
 
 
-@app.route('/modificar/<username>/<info>',methods=['POST'])
-def updateInfo(username,info):
+@app.route('/modificar',methods=['POST'])
+def updateInfo():
 	try:
-		if username is None or info is None:
+		doc = request.json
+		if 'username' not in doc:
 			return 'Missing arguments',400
 
-		collection.update_one({'username':username},{'$set':{'username':info}})
+		username = doc['username']
+		collection.update_one({'username':username},{'$set':doc})
 		return f'User info update successfully',200
 	
 	except Exception as e:
 		return f'Erro:{e}',400
 
 
-@app.route('/deletar/<username>',methods=['POST'])
+@app.route('/deletar',methods=['POST'])
 def delUSer(username):
 	try:
-		if username is None:
+		doc = request.json
+		if 'username' not in doc:
 			return 'Missing arguments',400
 
+		username = doc['username']
 		user = collection.find({'username':username})
 		if user is None:
 			return 'message: User not found',404
