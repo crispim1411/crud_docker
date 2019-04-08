@@ -40,7 +40,7 @@ def getUsers():
 		return f'Erro:{e}',400
 
 
-@app.route('/user/<username>',methods=['GET'])
+@app.route('/mostrar/<username>',methods=['GET'])
 def getUserByName(username):
 	try:
 		if username is None:
