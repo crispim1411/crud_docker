@@ -5,13 +5,13 @@
     function submit() {
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4) {
-                alert(xhr.response);
+            if (xhr.readyState == XMLHttpRequest.DONE) {
+                alert(xhr.responseText);
             }
         }
-        xhr.open('get', 'http://0.0.0.0:80/mostrar', true);
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-        xhr.send();
+        xhr.open('GET', 'http://0.0.0.0:80/mostrar', true);
+        //xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+        xhr.send(null);
     }
 
 </script>
